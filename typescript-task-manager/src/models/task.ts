@@ -9,6 +9,11 @@ type Task = {
     priority: Priority;
     createdAt: Date;
 }
+type User = {
+    id: string;
+    name: string;
+    email: string;
+}
 
 type Bug = Task & {
     severity: "low" | "medium" | "critical"; // '&' is called intersection
@@ -76,4 +81,72 @@ function updateTask(task: Task,updates: UpdateTaskInput): Task{
    return updatedTask;
 }
 
+//Generics
+class Repository<T extends{ id: string }>{
 
+    private items: T[] = [];
+
+    save(item: T): void{
+        this.items.push(item);
+    }
+
+    findAlll(): T[]{
+        return this.items;
+    }
+    
+    findById(id: string): T|undefined {
+        return this.items.find(item => item.id === id);
+    }
+
+    findBy<K extends keyof T>(
+        key: K,
+        value: T[K],
+):  T  | undefined {
+    return this.items.find(item => item[key] === value);
+}
+
+}
+
+const taskRepository = new Repository<Task>();
+const userRepostory = new  Repository<User>();
+
+
+//Generic Type Inference
+ function first<T>(items: T[]): T | undefined {
+        return items[0];
+    }
+
+const task: Omit<Task,"createdAt">[] = [
+  {
+      id: "12",
+    title: "Title",
+    description: "GTA 6 loading",
+    status: "completed",
+    priority: "high"
+  },
+  {
+    id: "13",
+    title: "Another task",
+    description: "Something else",
+    status: "ongoing",
+    priority: "low"
+  }
+]
+const firstTask = first<Omit<Task,"createdAt">>(task);
+
+//Conditional Types
+type HasId = {
+    id: string;
+}
+
+type hasAnId<T> = T extends HasId ? true: false;
+type A = hasAnId<Task>;
+
+type IsTask<T> = T extends Task ? true : false;
+type B = IsTask<Task>;
+type C = IsTask<User>
+
+//Conditional types over unions
+type OnlyBug<T> = T extends Bug ? T : never;
+
+type ExtractByType<T,U> = T extends U ? T:never;
