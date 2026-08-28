@@ -150,3 +150,54 @@ type C = IsTask<User>
 type OnlyBug<T> = T extends Bug ? T : never;
 
 type ExtractByType<T,U> = T extends U ? T:never;
+
+//Mapped Types
+type MyPartial<T> = {
+    [K in keyof T]?: T[K];
+}
+
+//Mapped Types Modifiers
+type MyRequired<T> = {
+    [K in keyof T] -?: T[K];
+}
+type MyReadOnly<T> = {
+   readonly [K in keyof T]: T[K];
+}
+
+//Key Remapping
+type TaskGetter<T> = {
+    [K in keyof T as `get${Capitalize<K & string>}`]: () => T[K];
+}
+// for every key K in T rename it as getKEYNAME and assign it the respective type
+
+
+type TaskEvents = {
+    taskCreated: Task;
+    taskDeleted: string;
+    taskStatusChanged: {
+        taskId: string;
+        oldStatus: Status;
+        newStatus: Status;
+    };
+};
+
+// Mapped Type: for each event type K --> make it optional and change its type to an array of callback functions
+type EventHandlers<Events> = {
+    [K in keyof Events]?: Array<(payload: Events[K]) => void>; 
+}
+
+
+class EventEmitter<Events> {
+    private handlers: EventHandlers<Events> = {};
+
+     on<K extends keyof Events>(
+    event: K, callback: (payload: Events[K]) => void) {
+
+    }
+
+    emit<K extends keyof Events>(
+        event: K, payload: Events[K]
+    ):void {
+
+    }
+}
