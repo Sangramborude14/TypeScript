@@ -227,18 +227,59 @@ interface taskRepository {
 }
 
 
-// class InMemoryTaskRepository implements taskRepository {
-//     private tasks: Task = [];
+class InMemoryTaskRepository implements taskRepository {
+    private tasks: Task[] = [];
     
-//     save(task: Task): void {
-//         this.tasks.push(task);
-//     }
+    save(task: Task): void {
+        this.tasks.push(task);
+    }
 
-//     findAll(): Task[] {
-//         return this.tasks;
-//     }
+    findAll(): Task[] {
+        return this.tasks;
+    }
 
-//     findById(id: string): Task | undefined {
-//         return this.tasks.find(task => task.id === id)
-//     }
-// }
+    findById(id: string): Task | undefined {
+        return this.tasks.find(task => task.id === id)
+    }
+}
+
+
+//contructor shorthand
+class TaskService {
+    constructor(private repository: taskRepository,private readonly serviceName: string){
+
+    }
+}
+
+//Dependancy injection
+class FakeTaskRepository implements taskRepository {
+    private tasks: Task[] = [];
+    save(task: Task): void {
+        this.tasks.push(task);
+    };
+    findAll(): Task[] {
+        return this.tasks;
+    }
+    findById(id: string): Task | undefined {
+        return this.tasks.find(task => task.id === id);
+    }
+}
+const service = new TaskService(new FakeTaskRepository(),"Task Service");
+
+// abstract classes
+abstract class BaseRepository<T> {
+    protected items: T[] = [];
+
+    save(item: T): void {
+        this.items.push(item);
+    }
+
+    abstract findAll():  T[];
+}
+
+
+    class  TaskRepository extends BaseRepository<Task> {
+        findAll(): Task[] {
+            return this.items;
+        }
+    }
