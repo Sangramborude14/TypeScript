@@ -201,3 +201,44 @@ class EventEmitter<Events> {
 
     }
 }
+const taskEvents = new EventEmitter<TaskEvents>();
+taskEvents.on("taskCreated",task => {
+    console.log(task.title);
+})
+
+// interface vs type aliasing 
+
+type Tasks = {
+    id: string;
+    title: string;
+    status: Status;
+};
+
+interface Taskes {
+    id: string;
+    title: string;
+    status: Status;
+}
+
+interface taskRepository {
+    save(task: Task): void;
+    findAll(): Task[];
+    findById(id: string): Task | undefined;
+}
+
+
+// class InMemoryTaskRepository implements taskRepository {
+//     private tasks: Task = [];
+    
+//     save(task: Task): void {
+//         this.tasks.push(task);
+//     }
+
+//     findAll(): Task[] {
+//         return this.tasks;
+//     }
+
+//     findById(id: string): Task | undefined {
+//         return this.tasks.find(task => task.id === id)
+//     }
+// }
