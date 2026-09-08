@@ -332,3 +332,19 @@ type MyReturnType<T> = T extends (...args: any[]) => infer R ? R : never;
 
 type UnwrapPromise<T> = T extends Promise<infer U> ? U : T; //nested infer
 
+
+//Exhaustive Checking
+function handleTask(task: Bug | Feature | Improvement){
+    switch (task.type){
+        case "bug":
+            return task.severity;
+        case "feature":
+            return task.estimatedHours;
+        case 'improvement':
+            return task.impact;
+        default:
+            return assertNever(task);
+    }
+}
+
+
