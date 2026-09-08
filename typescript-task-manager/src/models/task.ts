@@ -283,3 +283,43 @@ abstract class BaseRepository<T> {
             return this.items;
         }
     }
+
+
+//Function Overload
+function findTask(input: {status: string}): Task[];
+function findTask(input: {id: string}): Task | undefined;
+function findTask(input : {id: string} | {status: string}): Task | Task[] | undefined { 
+    //implementation
+    return undefined;
+}
+
+
+//Custom Type Predicates
+function isTask(value: unknown): value is Task{
+    if(typeof value !== 'object' || value === null){
+        return false;
+    }
+    const task = value as Record<string,unknown>;
+
+    return (
+        typeof task.id === 'string' &&
+        typeof task.title === 'string' &&
+        typeof task.description === 'string' &&
+        task.status  === "ongoing" || 
+        task.status ==="completed" ||
+        task.status ===  "incomplete"
+    )
+}
+
+function IsStatud(value: unknown): value is Status{
+    return( value === 'ongoing' ||
+    value === "completed" ||
+    value === "incomplete");
+}
+function isPriority(value: unknown):value is Priority{
+    return (
+        value === 'low' ||
+        value === 'medium' ||
+        value === 'high'
+    )
+}   
