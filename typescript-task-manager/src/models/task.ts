@@ -322,4 +322,13 @@ function isPriority(value: unknown):value is Priority{
         value === 'medium' ||
         value === 'high'
     )
-}   
+}
+
+type GetArrayElement<T> = T extends (infer U)[] ? U : never;
+
+type getFirstParameter<T> = T extends (first: infer P, ...args: any[]) => any ? P : never;  // if function T contains at least one parameter  infer its type as P and return P else return never
+
+type MyReturnType<T> = T extends (...args: any[]) => infer R ? R : never;
+
+type UnwrapPromise<T> = T extends Promise<infer U> ? U : T; //nested infer
+
