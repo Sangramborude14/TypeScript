@@ -1,3 +1,5 @@
+import { stat } from "node:fs";
+
 type Status = "ongoing" | "completed" | "incomplete"; // used Literal Union Types
 type Priority = "low" | "medium" | "high"; // '\' is called Union
 
@@ -348,3 +350,6 @@ function handleTask(task: Bug | Feature | Improvement){
 }
 
 
+//as const
+const statuses = ["ongoing","completed","incomplete"];
+type newStatus = typeof statuses[1];
