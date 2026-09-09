@@ -406,3 +406,36 @@ type Folder = {
 }
 
 type JSONValue = string | number | boolean | null | JSONValue[] | {[key: string]: JSONValue};
+
+//Advances Template Literal types
+type Resource = "task" | "user";
+type Permission = "read" | "write";
+
+type PermissionName = `${Resource}${Capitalize<Permission>}`;
+
+type Entity = "task" | "user" | "project";
+type Action = "created" | "deleted";
+
+type EventName = `${Entity}${Capitalize<Action>}`;
+
+type ExtractEntity<E> = E extends `${infer Entity}Created` ? Entity :
+|E extends `${infer Entity}Deleted`? Entity: never;
+
+type Events = {
+  task: Task;
+  user: {
+    id: string;
+    name: string;
+  };
+  project: {
+    id: string;
+    title: string;
+  };
+};
+
+type PayloadForEvent<E extends string> = 
+ExtractEntity<E> extends keyof Events ? Events[ExtractEntity<E>] : never;
+
+
+type F = PayloadForEvent<"projectCreated">;
+// { id: string; title: string }
