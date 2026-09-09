@@ -353,3 +353,16 @@ function handleTask(task: Bug | Feature | Improvement){
 //as const
 const statuses = ["ongoing","completed","incomplete"];
 type newStatus = typeof statuses[1];
+
+
+//Branded Types
+
+type TaskId = string & {readonly __brand: "TaskId";}
+function createTaskId(value: string): TaskId {
+    return value as TaskId;
+}
+
+type UserId = string & {readonly __brand: "UserId";}
+function createUserId(value: string): UserId {
+    return value as UserId;
+}
