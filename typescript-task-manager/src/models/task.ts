@@ -366,3 +366,43 @@ type UserId = string & {readonly __brand: "UserId";}
 function createUserId(value: string): UserId {
     return value as UserId;
 }
+
+
+//recursive Types
+type TaskNode = Task & {
+    subtasks: TaskNode[];
+};
+
+const task1: TaskNode = {
+  id: "1",
+  title: "Build app",
+  description: "Main project",
+  status: "ongoing",
+  priority: "high",
+  createdAt: new Date(),
+
+  subtasks: [
+    {
+      id: "2",
+      title: "Build API",
+      description: "Create API",
+      status: "ongoing",
+      priority: "high",
+      createdAt: new Date(),
+      subtasks: []
+    }
+  ]
+};
+
+type Comment = {
+    id : string;
+    text : string;
+    replies : Comment[];
+}
+type Folder = {
+    name: string;
+    files: string[];
+    subfolders: Folder[];
+}
+
+type JSONValue = string | number | boolean | null | JSONValue[] | {[key: string]: JSONValue};
