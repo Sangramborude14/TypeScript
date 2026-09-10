@@ -439,3 +439,19 @@ ExtractEntity<E> extends keyof Events ? Events[ExtractEntity<E>] : never;
 
 type F = PayloadForEvent<"projectCreated">;
 // { id: string; title: string }
+
+
+//Variadic Tuple Types
+function prepend<T extends unknown[],U>(
+    value: U,
+    ...items: T
+): [U, ...T]{
+    return [value, ...items];
+};
+
+
+type AddTimeStamp<T extends unknown[]> = [Date, ...T];
+type Result = AddTimeStamp<[string,number]>;
+
+type First<T extends unknown[]> = T extends [infer F, ...unknown[]] ? F : never;
+type Last<T extends unknown[]> = T extends [...unknown[],infer F] ? F : never;
