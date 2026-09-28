@@ -455,3 +455,18 @@ type Result = AddTimeStamp<[string,number]>;
 
 type First<T extends unknown[]> = T extends [infer F, ...unknown[]] ? F : never;
 type Last<T extends unknown[]> = T extends [...unknown[],infer F] ? F : never;
+
+// Keyof + typeOf + Indexed Access Type
+
+function getProperty<T,K extends keyof T>(
+    obj: T,
+    key: K,
+): T[K] {
+    return obj[key];
+}
+const task2 = {
+  title: "Fix bug",
+  priority: "high",
+  retries: 3
+};
+const result = getProperty(task2,"priority")
