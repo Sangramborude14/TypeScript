@@ -470,3 +470,76 @@ const task2 = {
   retries: 3
 };
 const result = getProperty(task2,"priority")
+
+// Declaration Merging
+interface shape {
+    colour: string;
+    isFilled: boolean;
+}
+interface shape {
+    perimeter: number;
+}
+
+const shape1: shape = {
+    colour: "red",
+    isFilled: true,
+    perimeter: 23,
+}
+
+
+// advanced infer
+
+type FunctionArgs<T> = T extends (...args: infer A) => any ? A : never;
+type FunctionReturn<T> = T extends (...args: any[]) => infer R ? R : never;
+type ExtractData<T> = T extends Promise<infer D> ? D : never;
+
+type DeepUnwrap<T> = T extends Promise<infer U> ? U : never;
+type ExtractParam<T> = T extends `${string}:${infer Param}` ? Param : never;
+
+type ExtractParams<T extends string> =
+T extends `${string}:${infer Param }/${infer Rest}`
+? Param | ExtractParams<Rest>
+: T extends `${string}:${infer Param}`
+? Param : never;
+
+//typesafe pick
+function pick<T, K extends keyof T> (
+    obj: T,
+    ...keys: K[]
+): Pick<T,K> {
+    const result = {} as Pick<T,K>;
+    for(const key of keys) {
+        result[key] = obj[key];
+    }
+    return result;
+}
+
+function omit<T, K extends keyof T> (
+    obj: T,
+    ...keys: K[]
+): Omit<T,K>{
+    const result = {...obj};
+    for(const key of keys){
+        delete result[key];
+    }
+    return result;
+}
+
+
+function isaTask(value: unknown): value is Task {
+if(typeof value !== 'object' ||  value === null){
+    return false;
+}
+
+const task = value as Record<string, unknown>;
+
+if(typeof task.id !== 'string'){
+    return false;
+}
+if(typeof task.title !== 'string'){
+    return false;
+}
+return true; 
+}
+
+
