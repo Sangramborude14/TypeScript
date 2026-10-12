@@ -542,4 +542,106 @@ if(typeof task.title !== 'string'){
 return true; 
 }
 
+// Error Handling in TypeScript
 
+function parseTask(json: string): unknown {
+    try {
+        return JSON.parse(json);
+    }catch(error){
+        console.error("Invalid JSON");
+        throw error;
+    }
+}
+
+try {
+    JSON.parse("invalid");
+}catch(error){
+    if(error instanceof Error){
+        console.log(error.message);
+    }else{
+        console.log("An unknown error occured")
+    }
+}
+
+//Custom error classes
+class TaskNotFoundError extends Error {
+    constructor(id:string) {
+        super(`Task ${id} was not found`);
+        this.name = "TaskNotFoundError";
+    }
+}
+
+class InvalidTaskError extends Error {
+    constructor(message: string){
+        super(message);
+        this.name = "InvalidTaskError";
+    }
+}
+
+// Handle error by category
+function handleError(error:unknown){
+    if(error instanceof TaskNotFoundError){
+        return "The task does not exist";
+    }
+
+    if(error instanceof InvalidTaskError){
+        return `Invalid task: ${error.message}`;
+    }
+    if(error instanceof Error){
+        return `Unexpected Error ${error.message}`;
+    }
+    
+    return `An unexpected Error Occured`;
+
+}
+
+// Error handling with result type
+
+type result<T,E> =
+| {success: true; data: T}
+| {success: false; error: E};
+
+type TaskError = 
+| {type: "NOT_FOUND"; message: string}
+| {type: "INVALID_INPUT"; message: string};
+
+function FindTask(
+    id: string,
+    tasks: Task[],
+): result<Task, TaskError> {
+    const task = tasks.find(task => task.id === id);
+
+
+    if(!task){
+        return {
+            success:  false,
+            error: {
+                type: "NOT_FOUND", message: `Task ${id} not found`  },
+        }
+    }
+    return {success: true, data: task}
+}
+
+type Success<T> = Extract<result<Task,never>, {success: true}>;
+type Failure<E> = {success: false; error: E};
+
+// async error handling
+
+async function fetchTask(id: string): Promise<Task> {
+    const response = await fetch(`/api/tasks/${id}`);
+
+    if(!response.ok){
+        throw new Error("failed to fetch task");
+    }
+
+    return response.json() as Promise<Task>
+}
+
+try{
+    const task = await fetchTask("42");
+    console.log(task.title);
+}catch(error: unknown){
+    if(error instanceof Error){
+        console.log(error.message);
+    }
+}
